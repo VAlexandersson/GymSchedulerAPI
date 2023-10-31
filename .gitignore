@@ -39,4 +39,6 @@ local.settings.json
 
 # Ignore JetBrains Rider config
 .idea/
+
 *.DotSettings.user
+.fake

@@ -1,0 +1,3 @@
+@id=dfd88e13-0b88-447b-9691-598115e0ecab
+
+GET http://localhost:5124/exercise/{{id}}
