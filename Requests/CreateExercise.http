@@ -9,3 +9,6 @@ Content-Type: application/json
     "difficulty": "Beginner",
     "imageUrl": "https://static.strengthlevel.com/images/illustrations/bench-press-1000x1000.jpg"
 }
+
+###
+GET http://localhost:5124/exercise/d68a4d21-f967-477c-b3b3-949118e16d51

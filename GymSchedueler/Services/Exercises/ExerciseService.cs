@@ -9,7 +9,17 @@ public class ExerciseService : IExerciseService {
         _exercises.Add(exercise.Id, exercise);
     }
 
+    public void DeleteExercise(Guid id)
+    {
+        _exercises.Remove(id);
+    }
+
     public Exercise GetExercise(Guid id) {
         return _exercises[id];
+    }
+
+    public void UpsertExercise(Exercise exercise)
+    {
+        _exercises[exercise.Id] = exercise;
     }
 }

@@ -1,10 +1,10 @@
-@id=00000000-0000-0000-0000-000000000000
+@id=d68a4d21-f967-477c-b3b3-949118e16d51
 
 PUT http://localhost:5124/exercise/{{id}}
 Content-Type: application/json
 
 {
-    "name": "Bench Press",
+    "name": "Bench Press 2",
     "description": "Lay on a bench and press barbell up and down",
     "targetArea": "Chest",
     "equipment": "Barbell",

@@ -69,12 +69,28 @@ public class ExerciseController : ControllerBase {
 
     [HttpPut("{id:guid}")]
     public IActionResult UpsertExercise(Guid id, UpsertExerciseRequest request) {
-        return Ok(request);
+        var exercise = new Exercise(
+            id,
+            request.Name,
+            request.Description,
+            request.TargetArea,
+            request.Equipment,
+            request.Difficulty,
+            request.ImageUrl,
+            DateTime.Now
+            );
+
+        _exerciseService.UpsertExercise(exercise);
+
+
+        // TODO: Return 201 if created, 204 if updated
+        return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     public IActionResult DeleteExercise(Guid id) {
-        return Ok(id);
+        _exerciseService.DeleteExercise(id);
+        return NoContent();
     }
 
 
