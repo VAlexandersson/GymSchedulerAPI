@@ -11,4 +11,4 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5124/exercise/d68a4d21-f967-477c-b3b3-949118e16d51
+GET http://localhost:5124/exercise/bc096dde-49d0-43f6-8e35-c11f5d5d9cdf
