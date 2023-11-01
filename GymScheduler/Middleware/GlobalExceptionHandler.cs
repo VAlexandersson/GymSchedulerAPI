@@ -1,5 +1,4 @@
 using System.Net;
-using Microsoft.AspNetCore.Http;
 
 namespace GymScheduler.Middleware;
 
@@ -7,6 +6,11 @@ public class GlobalExceptionHandler
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<GlobalExceptionHandler> _logger;
+
+    private static readonly Dictionary<Type, (HttpStatusCode statusCode, string message)> ExceptionMappings = new() {
+        { typeof(KeyNotFoundException), (HttpStatusCode.NotFound, "The specified item was not found.") },
+        { typeof(ArgumentException), (HttpStatusCode.BadRequest, "Bad request.") },
+    };
     
     public GlobalExceptionHandler(RequestDelegate next, ILogger<GlobalExceptionHandler> logger) {
         _next = next;
@@ -17,8 +21,7 @@ public class GlobalExceptionHandler
         try {
            await _next(context);
         } catch (Exception exception) {
-            
-            _logger.LogError(exception, "An unhandled exception has occurred.");
+            _logger.LogInformation($"Handling exception. {exception.Message}");
             await HandleException(context, exception);
         }
     }
@@ -26,24 +29,15 @@ public class GlobalExceptionHandler
     private Task HandleException(HttpContext context, Exception exception) {
         context.Response.ContentType = "application/json";
         
-        if (exception is KeyNotFoundException)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            return context.Response.WriteAsJsonAsync(
-                new {
-                    status = context.Response.StatusCode, 
-                    message = "Resource not found"
-                });
-        }
+        var (statusCode, message) = ExceptionMappings.GetValueOrDefault(exception.GetType(), 
+            (HttpStatusCode.InternalServerError, "An internal server error occurred."));
         
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        context.Response.StatusCode = (int)statusCode;
         
-        var response = new {
-            status = context.Response.StatusCode,
-             message = "An internal server error occurred.",
-             detailedMessage = exception.Message
-        };
-        return context.Response.WriteAsJsonAsync(response);
+        return context.Response.WriteAsJsonAsync( new { 
+                status = context.Response.StatusCode, 
+                message, 
+                detailedMessage = exception.Message
+            });
     }
-    
 }

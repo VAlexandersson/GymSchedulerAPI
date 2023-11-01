@@ -1,4 +1,3 @@
-//using GymScheduler.Core.Services.Logging;
 using GymScheduler.Models;
 
 namespace GymScheduler.Services.Exercises;
@@ -12,13 +11,18 @@ public class ExerciseService : IExerciseService {
     }
     
     public void CreateExercise(Exercise exercise) {
-        _logger.LogInformation($"Exercise {exercise.Id} created.");
+        if (_exercises.ContainsKey(exercise.Id))
+            throw new ArgumentException($"Creation failed. Exercise {exercise.Id} already exists.");
+        if (_exercises.Values.Any(e => e.Name == exercise.Name))
+            throw new ArgumentException($"Creation failed. Exercise {exercise.Name} already exists.");
         _exercises.Add(exercise.Id, exercise);
+        _logger.LogInformation($"Exercise {exercise.Id} created.");
     }
 
     public void DeleteExercise(Guid id) {
-        _exercises.Remove(id);
-       // _loggerService.LogInformation($"Exercise {id} deleted.");
+        if(!_exercises.Remove(id))
+            throw new KeyNotFoundException($"Delete failed. Exercise {id} not found.");
+        _logger.LogInformation($"Exercise {id} deleted.");
     }
 
     public Exercise GetExercise(Guid id) {
@@ -29,6 +33,6 @@ public class ExerciseService : IExerciseService {
 
     public void UpsertExercise(Exercise exercise) {
         _exercises[exercise.Id] = exercise;
-       // _loggerService.LogInformation($"Exercise {exercise.Id} upserted.");
+        _logger.LogInformation($"Exercise {exercise.Id} upserted.");
     }
 }
